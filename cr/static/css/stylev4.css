@@ -1,0 +1,538 @@
+/* ═══════════════════════════════════════
+   Credit Risk Intelligence System — CSS
+═══════════════════════════════════════ */
+/* 1️⃣ 引入 Google Fonts Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+:root {
+  --ink: #1a1a1a;
+  --dark: #111111;
+  --panel: #ffffff;
+  --border: #e0e0e0;
+  --safe: #10b981;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --accent: #2d3748;
+  --muted: #888888;
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Poppins', 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+  --nav-w: 80px;
+  --hero-bg: #c8c8c8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* 3️⃣ 全站使用 */
+html, body { 
+  height: 100%; 
+  width: 100%; 
+  background: #f4f4f2; 
+  color: var(--ink); 
+  font-family: var(--sans);  /* 全站英文自動用 Poppins，中文 fallback */
+  line-height: 1.6;         
+  overflow: hidden; 
+}
+/* ── SIDENAV ── */
+.sidenav {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--nav-w);
+  background: #1a1a1a;
+  display: flex; flex-direction: column; align-items: center;
+  z-index: 100;
+}
+.sidenav .brand-avatar {
+  width: var(--nav-w); height: var(--nav-w);
+  background: #111;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid #333; flex-shrink: 0;
+}
+.brand-avatar .avatar-inner {
+  width: 44px; height: 44px; border-radius: 6px;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: #111;
+  font-weight: 700; text-align: center; line-height: 1.2;
+}
+.nav-items { flex: 1; display: flex; flex-direction: column; width: 100%; padding-top: 8px; }
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 16px 0; cursor: pointer; color: #666; font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+  transition: all 0.2s; border-left: 2px solid transparent; gap: 7px; user-select: none;
+}
+.nav-item i { font-size: 18px; }
+.nav-item:hover { color: #ccc; background: rgba(255,255,255,0.06); }
+.nav-item.active { color: #ffffff; border-left-color: #ffffff; background: rgba(255,255,255,0.1); }
+
+/* ── PAGES ── */
+.pages { margin-left: var(--nav-w); height: 100vh; overflow: hidden; position: relative; }
+.page { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; overflow-y: auto; }
+.page.active { opacity: 1; pointer-events: all; }
+
+/* ===== HERO PAGE ===== */
+
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  background: url("/static/img/hero.jpg") center/cover no-repeat;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding-left: 120px;
+}
+
+/* 漸層遮罩 */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(245,247,250,0.95) 0%,
+    rgba(245,247,250,0.85) 40%,
+    rgba(245,247,250,0.3) 70%,
+    rgba(245,247,250,0.1) 100%
+  );
+}
+
+/* 左側文字 */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+}
+
+/* ===== 文字浮現動畫 ===== */
+@keyframes fadeUp {
+  0% {
+    opacity: 0;             /* 初始透明 */
+    transform: translateY(30px); /* 從下方 30px 飄起 */
+  }
+  100% {
+    opacity: 1;             /* 漸漸顯現 */
+    transform: translateY(0);    /* 到達最終位置 */
+  }
+}
+
+/* 套用到 hero-content 下的所有文字 */
+.hero-content > * {
+  opacity: 0;                     /* 初始隱藏 */
+  animation: fadeUp 1s ease forwards; /* 動畫 1 秒完成 */
+}
+
+/* 依序延遲動畫，讓文字逐個浮現 */
+.hero-subtitle {
+  font-size: 20px;
+  color: #425a74;
+  margin-bottom: 25px;
+  font-family: 'Inter', sans-serif;
+
+  animation-delay: 0.2s; /* 先出現 */
+}
+
+.hero-title {
+  font-size: 100px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  line-height: 1.1;
+
+  animation-delay: 0.5s; /* 接著出現 */
+}
+
+.hero-desc {
+  font-size: 20px;
+  color: #425a74;
+  line-height: 1.8;
+
+  animation-delay: 0.8s; /* 再出現 */
+}
+
+.hero-credit {
+  color: #1c1c1c;
+
+  animation-delay: 1.1s; /* 最後出現 */
+}
+
+.hero-risk {
+  background: linear-gradient(45deg, #d4af37, #b8860b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* 若想也浮現，可以加動畫 */
+  animation-delay: 1.3s;
+}
+
+/* ===== 右下按鈕浮現動畫 ===== */
+.hero-btn {
+  position: absolute;
+  right: 120px;
+  bottom: 100px;
+  padding: 18px 55px;
+  background: #16324f;
+  color: #fff;
+  border: none;
+  border-radius: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 2;
+
+  /* 初始隱藏，從下方浮現 */
+  opacity: 0;
+  transform: translateY(30px);
+  
+  /* 動畫浮現 */
+  animation: fadeUp 1s ease forwards;
+  animation-delay: 1.5s; /* 延遲 1.5 秒，文字浮現後再出現 */
+
+  /* 懸停動畫平滑 */
+  transition: all 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 懸停動畫 + 彈跳效果 */
+.hero-btn:hover {
+  background: linear-gradient(45deg, #ffffff, #e0e0e0);
+  color: #16324f;
+  transform: scale(1.1) translateY(-10px); /* 放大 + 小彈跳 */
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+}
+
+/* 點擊按鈕縮小效果 */
+.hero-btn:active {
+  transform: scale(0.95) translateY(0);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ── DASHBOARD PAGE ── */
+#page-dashboard {
+  background: url("/static/img/4.jpg") center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0;
+}
+
+/* ── 內部布局：左側控制台 + 右側主要內容 ── */
+.dash-inner {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* 左側固定寬度、右側自適應 */
+  height: 100vh;
+}
+
+/* 左側控制台 */
+.dash-controls {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 左側整欄高度滿版 */
+  border-right: 1px solid var(--border);
+  background: #fff;
+}
+
+/* 固定 header */
+.dash-ctrl-header {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff; /* 防止底下 scroll content 覆蓋 header */
+}
+
+/* 內容區域填滿剩餘空間並 scroll */
+.ctrl-body {
+  flex: 1;          /* 填滿剩餘高度 */
+  overflow-y: auto; /* 內容可滾動 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;        /* 每個 ctrl-block 之間距離加大 */
+}
+
+.ctrl-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;         /* 每個文字塊內部小間距 */
+}
+/* 控制元件 */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  outline: none;
+  cursor: pointer;
+  border-radius: 1px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #888;
+  border: 2px solid #555;
+  transition: transform 0.15s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+}
+
+/* Select 控制元件 */
+.ctrl-select {
+  width: 100%;
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: var(--sans);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  border-radius: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  transition: border-color 0.2s;
+}
+
+/* 主區域 */
+.dash-main {
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 上方卡片列 */
+.dash-toprow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.dcard {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.dcard-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dcard-header h2 {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dcard-body {
+  padding: 18px;
+}
+
+/* Gauge 儀表 */
+.gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 0;
+}
+
+canvas#gauge {
+  max-width: 200px;
+  width: 100%;
+}
+
+.gauge-pct {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-top: -4px;
+}
+
+.gauge-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 5px 16px;
+  margin-top: 10px;
+  border: 1px solid;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+/* 四象限 */
+.quadrant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+  min-height: 280px;
+}
+
+.quad {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.quad .q-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.quad .q-title {
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.quad .q-desc {
+  font-size: 14px;
+}
+
+/* 右側說明框 */
+.quad-detail-box {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 24px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.qdb-title {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--sans);
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.qdb-desc {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #555;
+}
+
+.qdb-action {
+  font-size: 16px;
+  padding: 10px 22px;
+  font-weight: 600;
+  border-radius: 24px;
+}
+
+/* ── 手機版 RWD ── */
+@media (max-width: 768px) {
+
+  /* 左側控制台變寬度自適應 */
+  .dash-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .dash-toprow {
+    grid-template-columns: 1fr; /* 卡片單欄排列 */
+  }
+
+  .quadrant-grid {
+    grid-template-columns: 1fr; /* 四象限單欄 */
+    grid-template-rows: auto;
+  }
+
+  /* 四象限文字縮小 */
+  .quad .q-title {
+    font-size: 14px;
+  }
+
+  .quad .q-desc {
+    font-size: 13px;
+  }
+
+  /* 右側說明框文字縮小 */
+  .quad-detail-box {
+    font-size: 14px;
+    padding: 14px;
+  }
+
+  .qdb-title {
+    font-size: 18px;
+  }
+
+  .qdb-desc {
+    font-size: 14px;
+  }
+
+  .qdb-action {
+    font-size: 14px;
+    padding: 8px 18px;
+  }
+
+  /* 儀表、卡片寬度自適應 */
+  .gauge-wrap canvas#gauge {
+    max-width: 150px;
+  }
+}
+
+/* ── ABOUT PAGE ── */
+#page-about { background: #f4f4f2; padding: 60px 48px; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+#page-about .eyebrow { font-family: var(--mono); font-size: 11px; color: #7090c0; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 18px; }
+#page-about h2 { font-size: 36px; font-weight: 700; color: var(--ink); letter-spacing: -1px; margin-bottom: 28px; }
+#page-about p { font-size: 15px; color: #444; line-height: 1.9; margin-bottom: 18px; max-width: 620px; }
+
+/* ── HOME TEXT ANIMATION ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-title  { animation: fadeInUp 1s ease forwards; opacity: 0; }
+.home-subtitle { animation: fadeInUp 1s ease 0.4s forwards; opacity: 0; }
+.home-cta    { animation: fadeInUp 1s ease 0.8s forwards; opacity: 0; }
+.home-tagline { animation: fadeInUp 1s ease 1.2s forwards; opacity: 0; }
+/* ── 全站文字最小 20px，等比例放大 ── */
+#page-dashboard, 
+#page-dashboard * {
+    font-size: 20px !important;        /* 最小字體 20px */
+    line-height: 1.5 !important;       /* 行距適中 */
+    font-weight: 600 !important;       /* 適度粗體 */
+    font-family: var(--sans) !important; /* 統一字型 */
+}
+
+/* 保持控制台 label 字型 monospace */
+.dash-ctrl-header .label,
+.factor-name,
+.factor-pct,
+.hist-key {
+    font-family: var(--mono) !important;
+}
+
+/* 特殊放大右側方框標題 */
+.quad-detail-box .qdb-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+/* 右側方框說明文字 */
+.quad-detail-box .qdb-desc {
+    font-size: 20px !important;
+    line-height: 1.8 !important;
+}
+
+/* 右側方框按鈕 */
+.quad-detail-box .qdb-action {
+    font-size: 20px !important;
+    padding: 12px 28px !important;
+    font-weight: 600 !important;
+}

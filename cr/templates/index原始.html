@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<title>Credit Risk Intelligence System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Share+Tech+Mono:wght@400&family=Inter:wght@300;400;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stylev5.css') }}">
+</head>
+<body>
+
+<!-- SIDENAV -->
+<nav class="sidenav">
+  <div class="brand-avatar">
+    <div class="avatar-inner">CR<br>IS</div>
+  </div>
+  <div class="nav-items">
+    <div class="nav-item active" onclick="showPage('home', this)">
+      <i class="fas fa-home"></i>Home
+    </div>
+    <div class="nav-item" onclick="showPage('dashboard', this)">
+      <i class="fas fa-chart-line"></i>Dash
+    </div>
+    <div class="nav-item" onclick="showPage('about', this)">
+      <i class="fas fa-info-circle"></i>About
+    </div>
+  </div>
+</nav>
+
+<div class="pages">
+
+<!-- ══ HOME ══ -->
+<div class="page active" id="page-home">
+
+  <div class="hero">
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+
+      <h1 class="hero-title">
+        <span class="hero-credit">Credit</span>
+        <span class="hero-risk">Risk</span>
+      </h1>
+
+      <div class="hero-desc">
+        人工智能信用違約評分系統，<br>
+        整合多維度特徵進行精準預測與族群策略分析。
+      </div>
+    </div>
+
+    <button class="hero-btn"
+      onclick="showPage('dashboard', document.querySelectorAll('.nav-item')[1])">
+      ENTER
+    </button>
+
+  </div>
+
+</div>
+
+  <!-- ══ DASHBOARD ══ -->
+  <div class="page" id="page-dashboard">
+    <div class="dash-inner">
+
+      <!-- 左側控制台 -->
+      <div class="dash-controls">
+        <div class="dash-ctrl-header">
+          <div class="label">Input Variables</div>
+          <h3>控制台</h3>
+        </div>
+        <div class="ctrl-body">
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>信用額度 LIMIT_BAL</span><span class="ctrl-val" id="val-limit">50,000</span></div>
+            <div class="ctrl-hint">Default 較常出現於低額度群體</div>
+            <input type="range" id="sl-limit" min="10000" max="500000" step="10000" value="50000" oninput="updateAll()">
+          </div>
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>年齡 Age</span><span class="ctrl-val" id="val-age">25</span></div>
+            <input type="range" id="sl-age" min="18" max="75" step="1" value="25" oninput="updateAll()">
+          </div>
+
+          <hr class="ctrl-sep">
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>性別 Sex</span></div>
+            <select class="ctrl-select" id="sl-sex" onchange="updateAll()">
+              <option value="female">女性 (Female)</option>
+              <option value="male">男性 (Male)</option>
+            </select>
+          </div>
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>教育程度 Education</span></div>
+            <select class="ctrl-select" id="sl-edu" onchange="updateAll()">
+              <option value="grad">研究所 (Graduate)</option>
+              <option value="uni" selected>大學 (University)</option>
+              <option value="hs">高中 (High School)</option>
+              <option value="other">其他 (Other)</option>
+            </select>
+          </div>
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>婚姻狀況 Marriage</span></div>
+            <select class="ctrl-select" id="sl-marriage" onchange="updateAll()">
+              <option value="single" selected>單身 (Single)</option>
+              <option value="married">已婚 (Married)</option>
+              <option value="other">其他 (Other)</option>
+            </select>
+          </div>
+
+          <hr class="ctrl-sep">
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>最近還款 PAY_0</span><span class="ctrl-val" id="val-pay" style="font-size:13px">準時</span></div>
+            <div class="ctrl-hint">負值/零代表準時還款</div>
+            <select class="ctrl-select" id="sl-pay" onchange="updateAll()">
+              <option value="-2">提前還款 (-2)</option>
+              <option value="-1">提前還款 (-1)</option>
+              <option value="0" selected>準時還款 (0)</option>
+              <option value="1">逾期1個月 (+1)</option>
+              <option value="2">逾期2個月 (+2)</option>
+              <option value="3">逾期3個月以上 (+3)</option>
+            </select>
+          </div>
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>逾期歷史次數</span><span class="ctrl-val" id="val-history">0</span></div>
+            <input type="range" id="sl-history" min="0" max="6" step="1" value="0" oninput="updateAll()">
+          </div>
+
+          <div class="ctrl-block">
+            <div class="ctrl-lbl"><span>額度使用率 %</span><span class="ctrl-val" id="val-util">30%</span></div>
+            <input type="range" id="sl-util" min="0" max="100" step="5" value="30" oninput="updateAll()">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 右側主顯示區 -->
+      <div class="dash-main">
+        <div class="dash-toprow">
+
+          <!-- 違約機率儀表 -->
+          <div class="dcard">
+            <div class="dcard-header"><div class="dch-line"></div><h2>預測違約機率 Default Prob.</h2></div>
+            <div class="dcard-body">
+              <div class="gauge-wrap">
+                <canvas id="gauge" width="200" height="110"></canvas>
+                <div class="gauge-pct" id="gauge-pct">10%</div>
+                <div class="gauge-badge" id="gauge-badge">低違約風險 SAFE</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 自動標籤 & 因子 -->
+          <div class="dcard">
+            <div class="dcard-header"><div class="dch-line"></div><h2>自動標籤 & 主要因子</h2></div>
+            <div class="dcard-body">
+              <div class="auto-label-box" id="auto-label-box">
+                <span id="auto-label-icon">◆</span>
+                <span id="auto-label-text">優質低風險客戶</span>
+              </div>
+              <div style="display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start">
+              <div id="factors-container"></div>
+            </div>
+          </div>
+
+          <!-- 歷史特徵比對 -->
+          <div class="dcard">
+            <div class="dcard-header"><div class="dch-line"></div><h2>歷史特徵比對</h2></div>
+            <div class="dcard-body"><div class="hist-grid" id="history-grid"></div></div>
+          </div>
+
+        </div>
+
+        <!-- 催收策略象限 -->
+        <div class="dcard">
+          <div class="dcard-header"><div class="dch-line"></div><h2>風險 × 金額 象限定位 — 催收策略</h2></div>
+          <div class="dcard-body">
+            <div style="display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start">
+              <div class="quadrant-grid" id="quadrant-grid">
+                <div class="quad" id="q-hh"><div class="q-icon">⚠</div><div class="q-title">高風險<br>×<br>高金額</div><div class="q-desc">人工催收</div></div>
+                <div class="quad" id="q-ll"><div class="q-icon">✓</div><div class="q-title">低風險<br>×<br>高金額</div><div class="q-desc">定期監控</div></div>
+                <div class="quad" id="q-hl"><div class="q-icon">◎</div><div class="q-title">高風險<br>×<br>低金額</div><div class="q-desc">自動化</div></div>
+                <div class="quad" id="q-lh"><div class="q-icon">—</div><div class="q-title">低風險<br>×<br>低金額</div><div class="q-desc">觀察即可</div></div>
+              </div>
+              <div class="quad-detail-box">
+                <div class="qdb-title" id="qdb-title">高風險 × 低金額</div>
+                <div class="qdb-desc" id="qdb-desc">違約機率高但違約金額小，人工催收 ROI 極低。建議使用 App 推播、簡訊自動化等低成本方式處理。</div>
+                <div class="qdb-action" id="qdb-action">→ 自動化催收</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-main -->
+    </div><!-- /dash-inner -->
+  </div><!-- /page-dashboard -->
+
+  <!-- ══ ABOUT ══ -->
+  <div class="page" id="page-about">
+    <div class="eyebrow">About This System</div>
+    <h2>關於本系統</h2>
+    <p>本儀表板使用邏輯回歸為基礎的評分模型，整合信用額度、還款行為、人口特徵等多維度變數，即時預測個案違約機率。</p>
+    <p>透過「違約傾向 × 違約金額」四象限矩陣，協助催收團隊精準分配資源，對低金額高風險客群優先採用自動化低成本策略，避免資源錯置。</p>
+    <p style="color:#999;font-family:var(--mono);font-size:11px;letter-spacing:2px;margin-top:32px">CREDIT RISK INTELLIGENCE · 2025</p>
+  </div>
+
+</div><!-- /pages -->
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
